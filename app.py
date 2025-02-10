@@ -121,7 +121,7 @@ def build_final_message(text, uploaded_files, attachment_position):
         final_message += f"<div style='text-align: left; margin-top: 10px;'>{non_image_html}</div>"
     
     if "Best regards" not in text:
-        final_message += "<div style='text-align: left;'>Best regards,<br>Safebox Technologies</div>"
+        final_message += "<div style='text-align: left;'>Best regards,<br>Peace Ekeinde<br>Safebox Technologies</div>"
     
     return final_message
 
@@ -267,6 +267,7 @@ if __name__ == "__main__":
 
 
 
+<<<<<<< HEAD
 
 
 # import streamlit as st
@@ -1588,6 +1589,8 @@ if __name__ == "__main__":
 
 # if __name__ == "__main__":
 #     main()
+=======
+>>>>>>> ce014960e1df15473182528e703666993eb83e0a
 
 
 
