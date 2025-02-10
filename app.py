@@ -4,9 +4,14 @@ import datetime
 import time
 import base64
 import io
+import json
+from dotenv import load_dotenv
 from google.oauth2.service_account import Credentials
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaIoBaseUpload
+
+# Load environment variables from .env file
+load_dotenv()
 
 # --- Configuration Constants ---
 SCOPES = [
@@ -15,7 +20,13 @@ SCOPES = [
 ]
 SPREADSHEET_ID = '10lbi8VTEZ1i7a21XghH8PyQmJQkSLupJDGmMqBIGsw4'
 SHEET_NAME = 'Notification Manager'
-CREDENTIALS_FILE = r'C:\Users\DELL\Desktop\PYTHON DIRECTORY\SAFEBOX NOTIFICATION SYSTEM\credentials.json'
+
+# Load credentials JSON from environment variable
+cred_json = os.getenv("GOOGLE_CREDENTIALS_JSON")
+if not cred_json:
+    st.error("GOOGLE_CREDENTIALS_JSON not found in environment.")
+    st.stop()
+cred_info = json.loads(cred_json)
 
 # Predefined dropdown options for the "Recipient Sheet"
 RECIPIENTS_OPTIONS = ["Employee Master Data", "Zummey", "SafeBox Energy", "Admin Master Data"]
@@ -25,20 +36,14 @@ RECIPIENTS_OPTIONS = ["Employee Master Data", "Zummey", "SafeBox Energy", "Admin
 @st.cache_resource
 def get_sheets_service():
     """Returns an authorized Google Sheets API service instance."""
-    if not os.path.exists(CREDENTIALS_FILE):
-        st.error(f"Google Sheets API credentials not found at: {CREDENTIALS_FILE}")
-        st.stop()
-    creds = Credentials.from_service_account_file(CREDENTIALS_FILE, scopes=SCOPES)
+    creds = Credentials.from_service_account_info(cred_info, scopes=SCOPES)
     service = build('sheets', 'v4', credentials=creds)
     return service
 
 @st.cache_resource
 def get_drive_service():
     """Returns an authorized Google Drive API service instance."""
-    if not os.path.exists(CREDENTIALS_FILE):
-        st.error(f"Google Drive API credentials not found at: {CREDENTIALS_FILE}")
-        st.stop()
-    creds = Credentials.from_service_account_file(CREDENTIALS_FILE, scopes=SCOPES)
+    creds = Credentials.from_service_account_info(cred_info, scopes=SCOPES)
     drive_service = build('drive', 'v3', credentials=creds)
     return drive_service
 
@@ -145,18 +150,18 @@ def landing_page():
             with st.spinner("Redirecting to Instant Messaging..."):
                 time.sleep(1)
             st.session_state.page = "instant"
-            st.experimental_rerun()
+            st.rerun()
     with col2:
         if st.button("Scheduling Message"):
             with st.spinner("Redirecting to Scheduling Message..."):
                 time.sleep(1)
             st.session_state.page = "scheduling"
-            st.experimental_rerun()
+            st.rerun()
 
 def instant_messaging_page():
     if st.button("← Go Back"):
         st.session_state.page = "landing"
-        st.experimental_rerun()
+        st.rerun()
 
     st.markdown("<h1 style='text-align: center;'>Instant Messaging</h1>", unsafe_allow_html=True)
     st.write("Fill in the details below to send your notification immediately.")
@@ -199,7 +204,7 @@ def instant_messaging_page():
 def scheduling_message_page():
     if st.button("← Go Back"):
         st.session_state.page = "landing"
-        st.experimental_rerun()
+        st.rerun()
 
     st.markdown("<h1 style='text-align: center;'>Scheduling Message</h1>", unsafe_allow_html=True)
     st.write("Fill in the details below to schedule your notification. The message will trigger on the set date.")
@@ -257,6 +262,8 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
 
 
 
