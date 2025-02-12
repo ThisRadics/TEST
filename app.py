@@ -267,7 +267,6 @@ if __name__ == "__main__":
 
 
 
-<<<<<<< HEAD
 
 
 # import streamlit as st
